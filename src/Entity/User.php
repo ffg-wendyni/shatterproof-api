@@ -27,14 +27,34 @@ class User
     private $lastName;
 
     /**
-     * @ORM\Column(type="string", length=255, unique=true)
+     * @ORM\Column(type="string", length=255)
      */
     private $email;
 
     /**
-     * @ORM\Column(type="string", length=10, unique=true)
+     * @ORM\Column(type="string", length=10)
      */
     private $phone;
+
+    /**
+     * @ORM\Column(type="string", length=50)
+     */
+    private $gender;
+
+     /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $ethnicity;
+
+     /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $occupation;
+
+     /**
+     * @ORM\Column(type="string", length=10)
+     */
+    private $newsletterSub;
 
     public function getUserId(): ?int
     {
@@ -61,6 +81,26 @@ class User
         return $this->phone;
     }
 
+    public function getGender(): ?String
+    {
+        return $this->gender;
+    }
+
+    public function getEthnicity(): ?String
+    {
+        return $this->ethnicity;
+    }
+
+    public function getOccupation(): ?String
+    {
+        return $this->occupation;
+    }
+
+    public function getNewsletterSub(): ?String
+    {
+        return $this->newsletterSub;
+    }
+
     public function toArray()
     {
         return [
@@ -68,7 +108,11 @@ class User
             'firstName' => $this->getFirstName(),
             'lastName' => $this->getLastName(),
             'email' => $this->getEmail(),
-            'phone' => $this->getPhone()
+            'phone' => $this->getPhone(),
+            'gender' => $this->getGender(),
+            'ethnicity' => $this->getEthnicity(),
+            'occupation' => $this->getOccupation(),
+            'newsletterSub' => $this->getNewsletterSub()
         ];
     }
 
@@ -90,5 +134,25 @@ class User
     public function setPhone(String $phone)
     {
         $this->phone = $phone;
+    }
+
+    public function setGender(String $gender)
+    {
+        $this->gender = $gender;
+    }
+    
+    public function setEthnicity(String $ethnicity)
+    {
+        $this->ethnicity = $ethnicity;
+    }
+
+    public function setOccupation(String $occupation)
+    {
+        $this->occupation = $occupation;
+    }
+
+    public function setNewsletterSub(String $newsletterSub)
+    {
+        $this->newsletterSub = $newsletterSub;
     }
 }

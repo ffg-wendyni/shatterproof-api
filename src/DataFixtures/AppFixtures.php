@@ -19,6 +19,10 @@ class AppFixtures extends Fixture
             $user->setLastName($faker->lastName);
             $user->setEmail($faker->email);
             $user->setPhone($faker->numerify('##########'));
+            $user->setGender('Male');
+            $user->setEthnicity('Asian');
+            $user->setOccupation('Student');
+            $user->setNewsletterSub('True');
             $manager->persist($user);
         }
 

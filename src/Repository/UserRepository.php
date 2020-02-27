@@ -21,18 +21,54 @@ class UserRepository extends ServiceEntityRepository
         $this->manager = $manager;
     }
 
-    public function saveUser($firstName, $lastName, $email, $phone)
+    public function saveUser($firstName, $lastName, $email, $phone, $gender, $ethnicity, $occupation, $newsletterSub)
     {
         $newUser = new User();
         $newUser->setFirstName($firstName);
         $newUser->setLastName($lastName);
         $newUser->setEmail($email);
         $newUser->setPhone($phone);
+        $newUser->setGender($gender);
+        $newUser->setEthnicity($ethnicity);
+        $newUser->setOccupation($occupation);
+        $newUser->setNewsletterSub($newsletterSub);
 
         $this->manager->persist($newUser);
         $this->manager->flush();
     }
 
+    public function updateUser($data)
+    {   
+        $userId = $data['userId'];
+        $user = $this->findOneBy(['userId' => $userId]);
+
+        if (!$user) {
+            throw new \Exception(
+                'No user found for id '.$userId
+            );
+        }
+        
+        $firstName = $data['firstName'];
+        $lastName = $data['lastName'];
+        $email = $data['email'];
+        $phone = $data['phone'];
+        $gender = $data['gender'];
+        $ethnicity = $data['ethnicity'];
+        $occupation = $data['occupation'];
+        $newsletterSub = $data['newsletterSub'];
+
+        $user->setFirstName($firstName);
+        $user->setLastName($lastName);
+        $user->setEmail($email);
+        $user->setPhone($phone);
+        $user->setGender($gender);
+        $user->setEthnicity($ethnicity);
+        $user->setOccupation($occupation);
+        $user->setNewsletterSub($newsletterSub);
+        
+        $this->manager->persist($user);
+        $this->manager->flush();
+    }
 
     // /**
     //  * @return User[] Returns an array of User objects
