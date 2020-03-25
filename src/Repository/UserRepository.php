@@ -21,17 +21,39 @@ class UserRepository extends ServiceEntityRepository
         $this->manager = $manager;
     }
 
-    public function saveUser($firstName, $lastName, $email, $phone, $gender, $ethnicity, $occupation, $newsletterSub)
+    public function saveUser($data)
     {
+
+        $firstName = $data['firstName'];
+        $lastName = $data['lastName'];
+        $email = $data['email'];
+        $phone = $data['phone'];
+        $gender = $data['gender'];
+        $dob = $data['dob'];
+        $ethnicity = $data['ethnicity'];
+        $occupation = $data['occupation'];
+        $organization = $data['organization'];
+        $newsletterSub = $data['newsletterSub'];
+        $textAlertSub = $data['textAlertSub'];
+        $shareOnMedia = $data['shareOnMedia'];
+        $pledged = $data['pledged'];
+        $customPledgeLink = $data['customPledgeLink'];
+
         $newUser = new User();
-        $newUser->setFirstName($firstName);
-        $newUser->setLastName($lastName);
-        $newUser->setEmail($email);
-        $newUser->setPhone($phone);
-        $newUser->setGender($gender);
-        $newUser->setEthnicity($ethnicity);
-        $newUser->setOccupation($occupation);
-        $newUser->setNewsletterSub($newsletterSub);
+        $newUser->setStringField('firstName', $firstName);
+        $newUser->setStringField('lastName', $lastName);
+        $newUser->setStringField('email', $email);
+        $newUser->setStringField('phone', $phone);
+        $newUser->setStringField('gender', $gender);
+        $newUser->setDateField('dob', $dob);
+        $newUser->setStringField('ethnicity', $ethnicity);
+        $newUser->setStringField('occupation', $occupation);
+        $newUser->setStringField('organization', $organization);
+        $newUser->setBooleanField('newsletterSub', $newsletterSub);
+        $newUser->setBooleanField('textAlertSub', $textAlertSub);
+        $newUser->setBooleanField('shareOnMedia', $shareOnMedia);
+        $newUser->setBooleanField('pledged', $pledged);
+        $newUser->setStringField('customPledgeLink', $customPledgeLink);
 
         $this->manager->persist($newUser);
         $this->manager->flush();
@@ -53,18 +75,30 @@ class UserRepository extends ServiceEntityRepository
         $email = $data['email'];
         $phone = $data['phone'];
         $gender = $data['gender'];
+        $dob = $data['dob'];
         $ethnicity = $data['ethnicity'];
         $occupation = $data['occupation'];
+        $organization = $data['organization'];
         $newsletterSub = $data['newsletterSub'];
+        $textAlertSub = $data['textAlertSub'];
+        $shareOnMedia = $data['shareOnMedia'];
+        $pledged = $data['pledged'];
+        $customPledgeLink = $data['customPledgeLink'];
 
-        $user->setFirstName($firstName);
-        $user->setLastName($lastName);
-        $user->setEmail($email);
-        $user->setPhone($phone);
-        $user->setGender($gender);
-        $user->setEthnicity($ethnicity);
-        $user->setOccupation($occupation);
-        $user->setNewsletterSub($newsletterSub);
+        $user->setStringField('firstName', $firstName);
+        $user->setStringField('lastName', $lastName);
+        $user->setStringField('email', $email);
+        $user->setStringField('phone', $phone);
+        $user->setStringField('gender', $gender);
+        $user->setDateField('dob', $dob);
+        $user->setStringField('ethnicity', $ethnicity);
+        $user->setStringField('occupation', $occupation);
+        $user->setStringField('organization', $organization);
+        $user->setBooleanField('newsletterSub', $newsletterSub);
+        $user->setBooleanField('textAlertSub', $textAlertSub);
+        $user->setBooleanField('shareOnMedia', $shareOnMedia);
+        $user->setBooleanField('pledged', $pledged);
+        $user->setStringField('customPledgeLink', $customPledgeLink);
         
         $this->manager->persist($user);
         $this->manager->flush();

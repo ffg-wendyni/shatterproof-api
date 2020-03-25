@@ -2,7 +2,9 @@
 
 namespace App\Entity;
 
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
+use App\Entity\Location;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
@@ -41,6 +43,11 @@ class User
      */
     private $gender;
 
+    /**
+     * @ORM\Column(type="date")
+     */
+    private $dob;
+
      /**
      * @ORM\Column(type="string", length=255)
      */
@@ -51,108 +58,105 @@ class User
      */
     private $occupation;
 
-     /**
-     * @ORM\Column(type="string", length=10)
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $organization;
+
+    /**
+     * @ORM\Column(type="boolean")
      */
     private $newsletterSub;
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $textAlertSub;
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $shareOnMedia;
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $pledged;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $customPledgeLink;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="Location", inversedBy="users")
+     * @ORM\JoinColumn(name="location_id", referencedColumnName="location_id")
+     */
+    private $location;
 
     public function getUserId(): ?int
     {
         return $this->userId;
     }
 
-    public function getFirstName(): ?String
+    public function getUserLocation(): ?Location
     {
-        return $this->firstName;
+        return $this->location;
     }
 
-    public function getLastName(): ?String
+    public function getStringField($field): ?string
     {
-        return $this->lastName;
+        return $this->$field;
     }
 
-    public function getEmail(): ?String
+    public function getDateField($field): ?DateTime
     {
-        return $this->email;
+        return $this->$field;
     }
 
-    public function getPhone(): ?String
+    public function getBooleanField($field): ?bool
     {
-        return $this->phone;
-    }
-
-    public function getGender(): ?String
-    {
-        return $this->gender;
-    }
-
-    public function getEthnicity(): ?String
-    {
-        return $this->ethnicity;
-    }
-
-    public function getOccupation(): ?String
-    {
-        return $this->occupation;
-    }
-
-    public function getNewsletterSub(): ?String
-    {
-        return $this->newsletterSub;
+        return $this->$field;
     }
 
     public function toArray()
     {
         return [
             'userId' => $this->getUserId(),
-            'firstName' => $this->getFirstName(),
-            'lastName' => $this->getLastName(),
-            'email' => $this->getEmail(),
-            'phone' => $this->getPhone(),
-            'gender' => $this->getGender(),
-            'ethnicity' => $this->getEthnicity(),
-            'occupation' => $this->getOccupation(),
-            'newsletterSub' => $this->getNewsletterSub()
+            'firstName' => $this->getStringField('firstName'),
+            'lastName' => $this->getStringField('last'),
+            'email' => $this->getStringField('email'),
+            'phone' => $this->getStringField('phone'),
+            'gender' => $this->getStringField('gender'),
+            'dob' => $this->getDateField('dob'),
+            'ethnicity' => $this->getStringField('ethnicity'),
+            'occupation' => $this->getStringField('occupation'),
+            'organization' => $this->getStringField('organization'),
+            'newsletterSub' => $this->getBooleanField('newsletterSub'),
+            'textAlertSub' => $this->getBooleanField('textAlertSub'),
+            'shareOnMedia' => $this->getBooleanField('shareOnMedia'),
+            'pledged' => $this->getBooleanField('pledged'),
+            'customPledgeLink' => $this->getStringField('customPledgeLink')
         ];
     }
 
-    public function setFirstName(String $firstName)
+    public function setLocation(Location $location)
     {
-        $this->firstName = $firstName;
+        $this->location = $location;
     }
 
-    public function setLastName(String $lastName)
+    public function setStringField(String $field, String $value)
     {
-        $this->lastName = $lastName;
+        $this->$field = $value;
     }
 
-    public function setEmail(String $email)
+    public function setDateField(String $field, DateTime $value)
     {
-        $this->email = $email;
+        $this->$field = $value;
     }
 
-    public function setPhone(String $phone)
+    public function setBooleanField(String $field, String $value)
     {
-        $this->phone = $phone;
-    }
-
-    public function setGender(String $gender)
-    {
-        $this->gender = $gender;
-    }
-    
-    public function setEthnicity(String $ethnicity)
-    {
-        $this->ethnicity = $ethnicity;
-    }
-
-    public function setOccupation(String $occupation)
-    {
-        $this->occupation = $occupation;
-    }
-
-    public function setNewsletterSub(String $newsletterSub)
-    {
-        $this->newsletterSub = $newsletterSub;
+        $this->$field = $value;
     }
 }

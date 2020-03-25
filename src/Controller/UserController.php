@@ -24,20 +24,14 @@ class UserController
     public function add(Request $request): JsonResponse
     {
         $data = json_decode($request->getContent(), true);
-        $firstName = $data['firstName'];
-        $lastName = $data['lastName'];
-        $email = $data['email'];
-        $phone = $data['phone'];
-        $gender = $data['gender'];
-        $ethnicity = $data['ethnicity'];
-        $occupation = $data['occupation'];
-        $newsletterSub = $data['newsletterSub'];
-
-        if (empty($firstName) || empty($lastName) || empty($email) || empty($phone) || empty($gender) || empty($ethnicity) || empty($occupation) || empty($newsletterSub)) {
-            throw new NotFoundHttpException('Expecting mandatory parameters!');
+        
+        foreach ($data as $field => $value) {
+            if (empty($value)) {
+                throw new NotFoundHttpException('Expecting mandatory parameters!');
+            }
         }
 
-        $this->userRepository->saveUser($firstName, $lastName, $email, $phone, $gender, $ethnicity, $occupation, $newsletterSub);
+        $this->userRepository->saveUser($data);
 
         return new JsonResponse(['status' => 'User created!'], Response::HTTP_CREATED);
     }
