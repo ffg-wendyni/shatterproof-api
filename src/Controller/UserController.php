@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use Symfony\Component\Routing\Annotation\Route;
 use App\Repository\UserRepository;
+use App\Repository\LocationRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -12,10 +13,12 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 class UserController
 {
     private $userRepository;
+    private $locationRepository;
 
-    public function __construct(UserRepository $userRepository)
+    public function __construct(UserRepository $userRepository, LocationRepository $locationRepository)
     {
         $this->userRepository = $userRepository;
+        $this->locationRepository = $locationRepository;
     }
 
     /**
@@ -24,14 +27,26 @@ class UserController
     public function add(Request $request): JsonResponse
     {
         $data = json_decode($request->getContent(), true);
-        
-        foreach ($data as $field => $value) {
+
+        $userInfo = $data['userInfo'];
+        $locationInfo = $data['addressInfo'];
+
+        foreach ($locationInfo as $field => $value) {
             if (empty($value)) {
-                throw new NotFoundHttpException('Expecting mandatory parameters!');
+                throw new NotFoundHttpException('Expecting mandatory address parameter: '.$field);
             }
         }
 
-        $this->userRepository->saveUser($data);
+        $location = $this->locationRepository->saveLocation($locationInfo);
+        $userInfo['location'] = $location;
+
+        foreach ($userInfo as $field => $value) {
+            if (empty($value)) {
+                throw new NotFoundHttpException('Expecting mandatory user parameter: '.$field);
+            }
+        }
+
+        $this->userRepository->saveUser($userInfo);
 
         return new JsonResponse(['status' => 'User created!'], Response::HTTP_CREATED);
     }

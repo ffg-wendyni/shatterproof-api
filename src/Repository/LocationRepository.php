@@ -21,7 +21,7 @@ class LocationRepository extends ServiceEntityRepository
         $this->manager = $manager;
     }
 
-    public function saveLocation($data)
+    public function saveLocation($data): ?Location
     {
         $street1 = $data['street1'];
         $street2 = $data['street2'];
@@ -38,8 +38,10 @@ class LocationRepository extends ServiceEntityRepository
 
         $this->manager->persist($newLocation);
         $this->manager->flush();
+        return $newLocation;
     }
 
+    /*
     public function updateLocation($data)
     {   
         $locationId = $data['locationId'];
@@ -66,6 +68,7 @@ class LocationRepository extends ServiceEntityRepository
         $this->manager->persist($location);
         $this->manager->flush();
     }
+    */
 
     // /**
     //  * @return Location[] Returns an array of Location objects

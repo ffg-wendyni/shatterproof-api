@@ -6,6 +6,7 @@ use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\ORM\EntityManagerInterface;
+use DateTime;
 
 /**
  * @method User|null find($id, $lockMode = null, $lockVersion = null)
@@ -23,40 +24,9 @@ class UserRepository extends ServiceEntityRepository
 
     public function saveUser($data)
     {
-
-        $firstName = $data['firstName'];
-        $lastName = $data['lastName'];
-        $email = $data['email'];
-        $phone = $data['phone'];
-        $gender = $data['gender'];
-        $dob = $data['dob'];
-        $ethnicity = $data['ethnicity'];
-        $occupation = $data['occupation'];
-        $organization = $data['organization'];
-        $newsletterSub = $data['newsletterSub'];
-        $textAlertSub = $data['textAlertSub'];
-        $shareOnMedia = $data['shareOnMedia'];
-        $pledged = $data['pledged'];
-        $customPledgeLink = $data['customPledgeLink'];
-
         $newUser = new User();
-        $newUser->setStringField('firstName', $firstName);
-        $newUser->setStringField('lastName', $lastName);
-        $newUser->setStringField('email', $email);
-        $newUser->setStringField('phone', $phone);
-        $newUser->setStringField('gender', $gender);
-        $newUser->setDateField('dob', $dob);
-        $newUser->setStringField('ethnicity', $ethnicity);
-        $newUser->setStringField('occupation', $occupation);
-        $newUser->setStringField('organization', $organization);
-        $newUser->setBooleanField('newsletterSub', $newsletterSub);
-        $newUser->setBooleanField('textAlertSub', $textAlertSub);
-        $newUser->setBooleanField('shareOnMedia', $shareOnMedia);
-        $newUser->setBooleanField('pledged', $pledged);
-        $newUser->setStringField('customPledgeLink', $customPledgeLink);
 
-        $this->manager->persist($newUser);
-        $this->manager->flush();
+        $this->setAllUserFields($newUser, $data);
     }
 
     public function updateUser($data)
@@ -70,6 +40,11 @@ class UserRepository extends ServiceEntityRepository
             );
         }
         
+        $this->setAllUserFields($user, $data);
+    }
+
+    private function setAllUserFields($user, $data)
+    {
         $firstName = $data['firstName'];
         $lastName = $data['lastName'];
         $email = $data['email'];
@@ -84,6 +59,7 @@ class UserRepository extends ServiceEntityRepository
         $shareOnMedia = $data['shareOnMedia'];
         $pledged = $data['pledged'];
         $customPledgeLink = $data['customPledgeLink'];
+        $location = $data['location'];
 
         $user->setStringField('firstName', $firstName);
         $user->setStringField('lastName', $lastName);
@@ -99,6 +75,7 @@ class UserRepository extends ServiceEntityRepository
         $user->setBooleanField('shareOnMedia', $shareOnMedia);
         $user->setBooleanField('pledged', $pledged);
         $user->setStringField('customPledgeLink', $customPledgeLink);
+        $user->setLocation($location);
         
         $this->manager->persist($user);
         $this->manager->flush();

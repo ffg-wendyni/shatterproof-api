@@ -99,9 +99,9 @@ class User
         return $this->userId;
     }
 
-    public function getUserLocation(): ?Location
+    public function getUserLocation(): ?array
     {
-        return $this->location;
+        return $this->location->toArray();
     }
 
     public function getStringField($field): ?string
@@ -109,9 +109,10 @@ class User
         return $this->$field;
     }
 
-    public function getDateField($field): ?DateTime
+    public function getDateField($field): ?string
     {
-        return $this->$field;
+        $date = $this->$field;
+        return $date->format('Y-m-j');
     }
 
     public function getBooleanField($field): ?bool
@@ -122,21 +123,25 @@ class User
     public function toArray()
     {
         return [
-            'userId' => $this->getUserId(),
-            'firstName' => $this->getStringField('firstName'),
-            'lastName' => $this->getStringField('last'),
-            'email' => $this->getStringField('email'),
-            'phone' => $this->getStringField('phone'),
-            'gender' => $this->getStringField('gender'),
-            'dob' => $this->getDateField('dob'),
-            'ethnicity' => $this->getStringField('ethnicity'),
-            'occupation' => $this->getStringField('occupation'),
-            'organization' => $this->getStringField('organization'),
-            'newsletterSub' => $this->getBooleanField('newsletterSub'),
-            'textAlertSub' => $this->getBooleanField('textAlertSub'),
-            'shareOnMedia' => $this->getBooleanField('shareOnMedia'),
-            'pledged' => $this->getBooleanField('pledged'),
-            'customPledgeLink' => $this->getStringField('customPledgeLink')
+
+            'userInfo' => [
+                'userId' => $this->getUserId(),
+                'firstName' => $this->getStringField('firstName'),
+                'lastName' => $this->getStringField('lastName'),
+                'email' => $this->getStringField('email'),
+                'phone' => $this->getStringField('phone'),
+                'gender' => $this->getStringField('gender'),
+                'dob' => $this->getDateField('dob'),
+                'ethnicity' => $this->getStringField('ethnicity'),
+                'occupation' => $this->getStringField('occupation'),
+                'organization' => $this->getStringField('organization'),
+                'newsletterSub' => $this->getBooleanField('newsletterSub'),
+                'textAlertSub' => $this->getBooleanField('textAlertSub'),
+                'shareOnMedia' => $this->getBooleanField('shareOnMedia'),
+                'pledged' => $this->getBooleanField('pledged'),
+                'customPledgeLink' => $this->getStringField('customPledgeLink')
+            ],
+            'addressInfo' => $this->getUserLocation()
         ];
     }
 
@@ -150,8 +155,9 @@ class User
         $this->$field = $value;
     }
 
-    public function setDateField(String $field, DateTime $value)
+    public function setDateField(String $field, String $value)
     {
+        $value = DateTime::createFromFormat('Y-m-j', $value);
         $this->$field = $value;
     }
 
