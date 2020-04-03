@@ -32,7 +32,7 @@ class UserController
         $locationInfo = $data['addressInfo'];
 
         foreach ($locationInfo as $field => $value) {
-            if (empty($value)) {
+            if (empty($value) && $field !== 'street2') {
                 throw new NotFoundHttpException('Expecting mandatory address parameter: '.$field);
             }
         }
@@ -46,9 +46,9 @@ class UserController
             }
         }
 
-        $this->userRepository->saveUser($userInfo);
+        $newUserId = $this->userRepository->saveUser($userInfo);
 
-        return new JsonResponse(['status' => 'User created!'], Response::HTTP_CREATED);
+        return new JsonResponse(['status' => 'User '. $newUserId .' created!'], Response::HTTP_CREATED);
     }
 
     /**
@@ -77,12 +77,42 @@ class UserController
     {
         $data = json_decode($request->getContent(), true);
 
+        $userInfo = $data['userInfo'];
+        $locationInfo = $data['addressInfo'];
+
+        foreach ($locationInfo as $field => $value) {
+            if (empty($value) && $field !== 'street2') {
+                throw new NotFoundHttpException('Expecting mandatory address parameter: '.$field);
+            }
+        }
+
+        $location = $this->locationRepository->updateLocation($locationInfo);
+        $userInfo['location'] = $location;
+
+        foreach ($userInfo as $field => $value) {
+            if (empty($value)) {
+                throw new NotFoundHttpException('Expecting mandatory user parameter: '.$field);
+            }
+        }
+
+        $this->userRepository->updateUser($userInfo);
+
+        return new JsonResponse(['status' => 'Updated user '. $userInfo['userId'] .'!'], Response::HTTP_ACCEPTED);
+    }
+
+    /**
+     * @Route("/users/delete", name="delete_one_user", methods={"POST"})
+     */
+    public function delete(Request $request): JsonResponse
+    {
+        $data = json_decode($request->getContent(), true);
+
         if (empty($data['userId'])) {
             throw new NotFoundHttpException('Expecting mandatory userId!');
         }
 
-        $this->userRepository->updateUser($data);
+        $this->userRepository->deleteUser($data['userId']);
 
-        return new JsonResponse(['status' => 'Updated user '. $data['userId'] .'!'], Response::HTTP_ACCEPTED);
+        return new JsonResponse(['status' => 'Deleted user '. $data['userId'] .'!'], Response::HTTP_ACCEPTED);
     }
 }

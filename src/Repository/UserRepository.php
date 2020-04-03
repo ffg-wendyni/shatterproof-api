@@ -22,11 +22,13 @@ class UserRepository extends ServiceEntityRepository
         $this->manager = $manager;
     }
 
-    public function saveUser($data)
+    public function saveUser($data): ?int
     {
         $newUser = new User();
 
         $this->setAllUserFields($newUser, $data);
+
+        return $newUser->getUserId();
     }
 
     public function updateUser($data)
@@ -41,6 +43,20 @@ class UserRepository extends ServiceEntityRepository
         }
         
         $this->setAllUserFields($user, $data);
+    }
+
+    public function deleteUser($userId)
+    {
+        $user = $this->findOneBy(['userId' => $userId]);
+
+        if (!$user) {
+            throw new \Exception(
+                'No user found for id '.$userId
+            );
+        }
+
+        $this->manager->remove($user);
+        $this->manager->flush();
     }
 
     private function setAllUserFields($user, $data)

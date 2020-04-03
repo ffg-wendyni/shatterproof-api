@@ -31,7 +31,9 @@ class LocationRepository extends ServiceEntityRepository
         
         $newLocation = new Location();
         $newLocation->setStringField('street1', $street1);
-        $newLocation->setStringField('street2', $street2);
+        if ($street2 !== null) {
+            $newLocation->setStringField('street2', $street2);
+        }
         $newLocation->setStringField('state', $state);
         $newLocation->setStringField('country', $country);
         $newLocation->setStringField('zipcode', $zipcode);
@@ -41,34 +43,25 @@ class LocationRepository extends ServiceEntityRepository
         return $newLocation;
     }
 
-    /*
     public function updateLocation($data)
     {   
-        $locationId = $data['locationId'];
-        $location = $this->findOneBy(['locationId' => $locationId]);
-
-        if (!$location) {
-            throw new \Exception(
-                'No location found for id '.$locationId
-            );
-        }
-        
         $street1 = $data['street1'];
         $street2 = $data['street2'];
         $state = $data['state'];
         $country = $data['country'];
         $zipcode = $data['zipcode'];
 
-        $location->setStringField('street1', $street1);
-        $location->setStringField('street2', $street2);
-        $location->setStringField('state', $state);
-        $location->setStringField('country', $country);
-        $location->setStringField('zipcode', $zipcode);
+        $location = $this->findOneBy(['street1' => $street1, 'street2' => $street2,
+                                           'state' => $state, 'country' => $country, 'zipcode' => $zipcode]);
+
+        if (!$location) {
+            $newLocation = $this->saveLocation($data);
+            return $newLocation;
+        } else {
+            return $location;
+        }
         
-        $this->manager->persist($location);
-        $this->manager->flush();
     }
-    */
 
     // /**
     //  * @return Location[] Returns an array of Location objects
