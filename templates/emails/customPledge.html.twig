@@ -1,0 +1,6 @@
+{# templates/emails/customPledge.html.twig #}
+The following custom pledge from {{ firstName }} {{ lastName }} has been created: {{ body }}
+<br>
+To approve the pledge, please click the following link: <a href="{{ url('approve_pledge', {pledgeId: id}) }}">Approve Pledge</a>.
+<br>
+Thank you!
