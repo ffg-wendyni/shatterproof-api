@@ -4,7 +4,6 @@ namespace App\Controller;
 
 use Symfony\Component\Routing\Annotation\Route;
 use App\Repository\UserRepository;
-use App\Repository\LocationRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -13,12 +12,10 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 class UserController
 {
     private $userRepository;
-    private $locationRepository;
 
-    public function __construct(UserRepository $userRepository, LocationRepository $locationRepository)
+    public function __construct(UserRepository $userRepository)
     {
         $this->userRepository = $userRepository;
-        $this->locationRepository = $locationRepository;
     }
 
     /**
@@ -28,27 +25,20 @@ class UserController
     {
         $data = json_decode($request->getContent(), true);
 
-        $userInfo = $data['userInfo'];
-        $locationInfo = $data['addressInfo'];
 
-        foreach ($locationInfo as $field => $value) {
-            if (empty($value) && $field !== 'street2') {
-                throw new NotFoundHttpException('Expecting mandatory address parameter: '.$field);
-            }
-        }
-
-        $location = $this->locationRepository->saveLocation($locationInfo);
-        $userInfo['location'] = $location;
-
-        foreach ($userInfo as $field => $value) {
-            if (empty($value)) {
+        foreach ($data as $field => $value) {
+            if (empty($value) && $field != 'occupation') {
                 throw new NotFoundHttpException('Expecting mandatory user parameter: '.$field);
             }
         }
 
-        $newUserId = $this->userRepository->saveUser($userInfo);
+        $newUserId = $this->userRepository->saveUser($data);
 
-        return new JsonResponse(['status' => 'User '. $newUserId .' created!'], Response::HTTP_CREATED);
+        $response = [
+            'status' => 'User created!',
+            'userId' => $newUserId
+        ];
+        return new JsonResponse($response, Response::HTTP_CREATED);
     }
 
     /**
@@ -60,7 +50,7 @@ class UserController
 
         if (!$user) {
             throw new NotFoundHttpException(
-                'No user found for id '.$userId
+                'No user found for id '.$userId. ' !'
             );
         }
 
@@ -77,27 +67,15 @@ class UserController
     {
         $data = json_decode($request->getContent(), true);
 
-        $userInfo = $data['userInfo'];
-        $locationInfo = $data['addressInfo'];
-
-        foreach ($locationInfo as $field => $value) {
-            if (empty($value) && $field !== 'street2') {
-                throw new NotFoundHttpException('Expecting mandatory address parameter: '.$field);
-            }
-        }
-
-        $location = $this->locationRepository->updateLocation($locationInfo);
-        $userInfo['location'] = $location;
-
-        foreach ($userInfo as $field => $value) {
-            if (empty($value)) {
+        foreach ($data as $field => $value) {
+            if (empty($value) && $field != 'occupation') {
                 throw new NotFoundHttpException('Expecting mandatory user parameter: '.$field);
             }
         }
 
-        $this->userRepository->updateUser($userInfo);
+        $this->userRepository->updateUser($data);
 
-        return new JsonResponse(['status' => 'Updated user '. $userInfo['userId'] .'!'], Response::HTTP_ACCEPTED);
+        return new JsonResponse(['status' => 'Updated user '. $data['userId'] .'!'], Response::HTTP_ACCEPTED);
     }
 
     /**

@@ -6,7 +6,6 @@ use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\ORM\EntityManagerInterface;
-use DateTime;
 
 /**
  * @method User|null find($id, $lockMode = null, $lockVersion = null)
@@ -26,6 +25,16 @@ class UserRepository extends ServiceEntityRepository
     {
         $newUser = new User();
 
+        // email is unique
+        $email = $data['email'];
+        $user = $this->findOneBy(['email' => $email]);
+
+        if ($user) {
+            throw new \Exception(
+                'User with id '.$user->getUserId().' already exists for email '.$email. ' !'
+            );
+        }
+
         $this->setAllUserFields($newUser, $data);
 
         return $newUser->getUserId();
@@ -38,10 +47,20 @@ class UserRepository extends ServiceEntityRepository
 
         if (!$user) {
             throw new \Exception(
-                'No user found for id '.$userId
+                'No user found for id '.$userId.' !'
             );
         }
         
+        // email is unique
+        $email = $data['email'];
+        $userWithEmail = $this->findOneBy(['email' => $email]);
+
+        if ($user->getUserId() != $userWithEmail->getUserId()) {
+            throw new \Exception(
+                'User with id '.$userWithEmail->getUserId().' already exists for email '.$email. ' !'
+            );
+        }
+
         $this->setAllUserFields($user, $data);
     }
 
@@ -51,7 +70,7 @@ class UserRepository extends ServiceEntityRepository
 
         if (!$user) {
             throw new \Exception(
-                'No user found for id '.$userId
+                'No user found for id '.$userId.' !'
             );
         }
 
@@ -64,34 +83,22 @@ class UserRepository extends ServiceEntityRepository
         $firstName = $data['firstName'];
         $lastName = $data['lastName'];
         $email = $data['email'];
-        $phone = $data['phone'];
-        $gender = $data['gender'];
-        $dob = $data['dob'];
-        $ethnicity = $data['ethnicity'];
-        $occupation = $data['occupation'];
+        $zipcode = $data['zipcode'];
         $organization = $data['organization'];
         $newsletterSub = $data['newsletterSub'];
-        $textAlertSub = $data['textAlertSub'];
         $shareOnMedia = $data['shareOnMedia'];
         $pledged = $data['pledged'];
         $customPledgeLink = $data['customPledgeLink'];
-        $location = $data['location'];
 
         $user->setStringField('firstName', $firstName);
         $user->setStringField('lastName', $lastName);
         $user->setStringField('email', $email);
-        $user->setStringField('phone', $phone);
-        $user->setStringField('gender', $gender);
-        $user->setDateField('dob', $dob);
-        $user->setStringField('ethnicity', $ethnicity);
-        $user->setStringField('occupation', $occupation);
+        $user->setStringField('zipcode', $zipcode);
         $user->setStringField('organization', $organization);
         $user->setBooleanField('newsletterSub', $newsletterSub);
-        $user->setBooleanField('textAlertSub', $textAlertSub);
         $user->setBooleanField('shareOnMedia', $shareOnMedia);
         $user->setBooleanField('pledged', $pledged);
         $user->setStringField('customPledgeLink', $customPledgeLink);
-        $user->setLocation($location);
         
         $this->manager->persist($user);
         $this->manager->flush();
