@@ -2,20 +2,28 @@
 
 namespace App\Controller;
 
-use Symfony\Component\Routing\Annotation\Route;
 use App\Repository\UserRepository;
+use App\Repository\CustomPledgeRepository;
+use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
-class UserController
+class UserController extends AbstractController
 {
     private $userRepository;
+    private $customPledgeRepository;
+    private $mailer;
+    private $templating;
 
-    public function __construct(UserRepository $userRepository)
+    public function __construct(UserRepository $userRepository, CustomPledgeRepository $customPledgeRepository, \Swift_Mailer $mailer, \Twig\Environment $templating)
     {
         $this->userRepository = $userRepository;
+        $this->mailer = $mailer;
+        $this->templating = $templating;
+        $this->customPledgeRepository = $customPledgeRepository;
     }
 
     /**
@@ -32,7 +40,27 @@ class UserController
             }
         }
 
+        $newCustomPledge = $this->customPledgeRepository->saveCustomPledge($data['firstName'], $data['lastName'], $data['customPledge'], $data['shareOnMedia']);
+
+        $data['userPledge'] = $newCustomPledge;
         $newUserId = $this->userRepository->saveUser($data);
+
+        $message = new \Swift_Message('Custom Pledge Approval for Pledge ID '. $newCustomPledge->getPledgeId());
+        $message->setFrom($this->getParameter('sender_email'));
+        $message->setTo($this->getParameter('receiver_email'));
+        $message->setBody(
+                $this->templating->render(
+                    'emails/customPledge.html.twig',
+                    ['body' => $newCustomPledge->getBody(),
+                    'id' => $newCustomPledge->getPledgeId(),
+                    'firstName' => $newCustomPledge->getFirstName(),
+                    'lastName' => $newCustomPledge->getLastName()]
+                ),
+                'text/html'
+            );
+
+
+        $this->mailer->send($message);
 
         $response = [
             'status' => 'User created!',
@@ -42,9 +70,25 @@ class UserController
     }
 
     /**
+     * @Route("/users", name="get_all_users", methods={"GET"})
+     */
+    public function get_all_users(int $userId): JsonResponse
+    {
+        $users = $this->userRepository->findAll();
+        $data = [];
+
+        foreach ($users as $user) {
+            $data[] = $user->toArray();
+        }
+
+        return new JsonResponse($data, Response::HTTP_OK);
+
+    }
+
+    /**
      * @Route("/users/{userId}", name="get_one_user", methods={"GET"})
      */
-    public function get(int $userId): JsonResponse
+    public function get($userId): JsonResponse
     {
         $user = $this->userRepository->findOneBy(['userId' => $userId]);
 
@@ -61,11 +105,12 @@ class UserController
     }
 
     /**
-     * @Route("/users/update", name="update_one_user", methods={"POST"})
+     * @Route("/users/{userId}/update", name="update_one_user", methods={"POST"})
      */
-    public function update(Request $request): JsonResponse
+    public function update($userId, Request $request): JsonResponse
     {
         $data = json_decode($request->getContent(), true);
+        $data['userId'] = $userId;
 
         foreach ($data as $field => $value) {
             if (empty($value) && $field != 'occupation') {
@@ -79,18 +124,12 @@ class UserController
     }
 
     /**
-     * @Route("/users/delete", name="delete_one_user", methods={"POST"})
+     * @Route("/users/{userId}/delete", name="delete_one_user", methods={"GET"})
      */
-    public function delete(Request $request): JsonResponse
+    public function delete($userId, Request $request): JsonResponse
     {
-        $data = json_decode($request->getContent(), true);
+        $this->userRepository->deleteUser($userId);
 
-        if (empty($data['userId'])) {
-            throw new NotFoundHttpException('Expecting mandatory userId!');
-        }
-
-        $this->userRepository->deleteUser($data['userId']);
-
-        return new JsonResponse(['status' => 'Deleted user '. $data['userId'] .'!'], Response::HTTP_ACCEPTED);
+        return new JsonResponse(['status' => 'Deleted user '. $userId .'!'], Response::HTTP_ACCEPTED);
     }
 }

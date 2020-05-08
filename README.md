@@ -22,7 +22,9 @@
 ## User guide
 This API server currently supports create, retrieve, update, and delete operations of a pledge user entity.
 
-* ### Retreive user information
+### /users
+
+* #### Retreive user information
 > `GET /users/<userId>`
 >> Returns
 >>```javascript
@@ -44,7 +46,7 @@ This API server currently supports create, retrieve, update, and delete operatio
 >> No user found for id <userId> ! (500 Internal Server Error)
 >>```
 
-* ### Create new user
+* #### Create new user
 > `POST /users/add`
 >> Sends JSON body
 >>```javascript
@@ -57,7 +59,7 @@ This API server currently supports create, retrieve, update, and delete operatio
 >>   newsletterSub: boolean,
 >>   shareOnMedia: boolean,
 >>   pledged: boolean,
->>   customPledgeLink: string // provided by Drupal lifecycle management of Custom Pledge
+>>   customPledge: string
 >>}
 >>```
 >> Returns
@@ -72,12 +74,11 @@ This API server currently supports create, retrieve, update, and delete operatio
 >> User with id <userId> already exists for email <email> ! (500 Internal Server Error)
 >>```
 
-* ### Update existing user
-> `POST /users/update`
+* #### Update existing user
+> `POST /users/{userId}/update`
 >> Sends JSON body
 >>```javascript
 >>{
->>   userId: integer,
 >>   firstName: string,
 >>   lastName: string,
 >>   email: string,
@@ -85,14 +86,13 @@ This API server currently supports create, retrieve, update, and delete operatio
 >>   organization: string, // can be empty string
 >>   newsletterSub: boolean,
 >>   shareOnMedia: boolean,
->>   pledged: boolean,
->>   customPledgeLink: string // provided by Drupal lifecycle management of Custom Pledge
+>>   pledged: boolean
 >>}
 >>```
 >> Returns
 >>```javascript
 >>{
->>   status: "Updated user #"
+>>   status: "Updated user #!"
 >>}
 >>```
 >> Invalid user id
@@ -104,21 +104,96 @@ This API server currently supports create, retrieve, update, and delete operatio
 >> User with id <userId> already exists for email <email> ! (500 Internal Server Error)
 >>```
 
-* ### Delete existing user
-> `POST /users/delete`
->> Sends JSON body
->>```javascript
->>{
->>   userId: integer,
->>}
->>```
+* #### Delete existing user
+> `GET /users/{userId}/delete`
 >> Returns
 >>```javascript
 >>{
->>   status: "Deleted user #"
+>>   status: "Deleted user #!"
 >>}
 >>```
 >> Invalid user id
 >>```
 >> No user found for id <userId> ! (500 Internal Server Error)
+>>```
+
+### /pledges
+* #### Retreive all approved and sharable pledges
+> `GET /pledges`
+>> Returns
+>>```javascript
+>>[
+>>  {
+>>     pledgeId: integer,
+>>     firstName: string,
+>>     lastName: string,
+>>     likeCount: integer,
+>>     pledgeBody: string
+>>  }
+>>  ...more {}
+>>]
+>>```
+
+* #### Retreive pledge information
+> `GET /pledges/<pledgeId>`
+>> Returns
+>>```javascript
+>>{
+>>   pledgeId: integer,
+>>   firstName: string,
+>>   lastName: string,
+>>   likeCount: integer,
+>>   pledgeBody: string,
+>>   approved: boolean,
+>>   canShare: boolean
+>>}
+>>```
+
+* #### Update pledge information
+> `POST /pledges/<pledgeId>/update`
+>> Sends JSON body
+>>```javascript
+>>{
+>>   pledgeId: integer,
+>>   firstName: string,
+>>   lastName: string,
+>>   likeCount: integer,
+>>   pledgeBody: string,
+>>   approved: boolean,
+>>   canShare: boolean
+>>}
+>>```
+>> Returns
+>>```javascript
+>>{
+>>   status: "Updated pledge #!"
+>>}
+>>```
+
+* #### Delete pledge information
+> `GET /pledges/<pledgeId>/delete`
+>> Returns
+>>```javascript
+>>{
+>>   status: "Deleted pledge #!"
+>>}
+>>```
+
+* ### Approve pledge
+> `GET /pledges/<pledgeId>/approve`
+>> Returns
+>>```javascript
+>>{
+>>   status: "Approved pledge #!"
+>>}
+>>```
+
+* ### Increment pledge like count
+> `GET /pledges/<pledgeId>/like`
+>> Returns
+>>```javascript
+>>{
+>>   status: "Pledge # like count increamented!",
+>>   newCount: #
+>>}
 >>```

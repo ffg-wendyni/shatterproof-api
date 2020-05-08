@@ -23,8 +23,6 @@ class UserRepository extends ServiceEntityRepository
 
     public function saveUser($data): ?int
     {
-        $newUser = new User();
-
         // email is unique
         $email = $data['email'];
         $user = $this->findOneBy(['email' => $email]);
@@ -34,6 +32,9 @@ class UserRepository extends ServiceEntityRepository
                 'User with id '.$user->getUserId().' already exists for email '.$email. ' !'
             );
         }
+
+        $newUser = new User();
+        $newUser->setUserPledge($data['userPledge']);
 
         $this->setAllUserFields($newUser, $data);
 
@@ -88,7 +89,6 @@ class UserRepository extends ServiceEntityRepository
         $newsletterSub = $data['newsletterSub'];
         $shareOnMedia = $data['shareOnMedia'];
         $pledged = $data['pledged'];
-        $customPledgeLink = $data['customPledgeLink'];
 
         $user->setStringField('firstName', $firstName);
         $user->setStringField('lastName', $lastName);
@@ -98,7 +98,6 @@ class UserRepository extends ServiceEntityRepository
         $user->setBooleanField('newsletterSub', $newsletterSub);
         $user->setBooleanField('shareOnMedia', $shareOnMedia);
         $user->setBooleanField('pledged', $pledged);
-        $user->setStringField('customPledgeLink', $customPledgeLink);
         
         $this->manager->persist($user);
         $this->manager->flush();
