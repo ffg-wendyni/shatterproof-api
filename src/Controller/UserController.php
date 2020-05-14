@@ -35,7 +35,7 @@ class UserController extends AbstractController
 
 
         foreach ($data as $field => $value) {
-            if (empty($value) && $field != 'occupation') {
+            if (empty($value) && $field != 'occupation' && $field != 'shareOnMedia' && $field != 'newsletterSub') {
                 throw new NotFoundHttpException('Expecting mandatory user parameter: '.$field);
             }
         }
