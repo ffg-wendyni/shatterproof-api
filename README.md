@@ -12,7 +12,9 @@
 4. In root directory, run `composer install`.
 5. Modify `DATABASE_URL` in `.env` file to URL of MySQL server.
 6. For new database: follow database steps below
-8. To start server, run `symfony server:start`.
+7. Modify `sender_email` and `receiver_email` in `config/services.yaml` to email addresses to send and receive messages from.
+8. Modify `MAILER_URL` in `.env` file to url of email server and include `USERNAME` and `PASSWORD` of sender email.
+9. To start server, run `symfony server:start`.
 
 ## Database setup
 1. Create migration by running `bin/console make:migration` command.
