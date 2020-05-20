@@ -21,7 +21,7 @@ class CustomPledgeRepository extends ServiceEntityRepository
         $this->manager = $manager;
     }
 
-    public function saveCustomPledge($firstName, $lastName, $body, $canShare)
+    public function saveCustomPledge($firstName, $lastName, $body)
         {
             $newCustomPledge = new CustomPledge();
 
@@ -30,8 +30,7 @@ class CustomPledgeRepository extends ServiceEntityRepository
                 ->setLastName($lastName)
                 ->setLikeCount(0)
                 ->setBody($body)
-                ->setApproved(false)
-                ->setCanShare($canShare);
+                ->setApproved(false);
 
             $this->manager->persist($newCustomPledge);
             $this->manager->flush();

@@ -41,11 +41,6 @@ class CustomPledge
      */
     private $approved;
 
-    /**
-     * @ORM\Column(type="boolean")
-     */
-    private $canShare;
-
     public function getPledgeId(): ?int
     {
         return $this->pledgeId;
@@ -111,18 +106,6 @@ class CustomPledge
         return $this;
     }
 
-    public function getCanShare(): ?bool
-    {
-        return $this->canShare;
-    }
-
-    public function setCanShare(bool $canShare): self
-    {
-        $this->canShare = $canShare;
-
-        return $this;
-    }
-
     public function toArray()
     {
         return [
@@ -131,8 +114,7 @@ class CustomPledge
             'lastName' => $this->getLastName(),
             'likeCount' => $this->getLikeCount(),
             'body' => $this->getBody(),
-            'approved' => $this->getApproved(),
-            'canShare' => $this->getCanShare()
+            'approved' => $this->getApproved()
         ];
     }
 }

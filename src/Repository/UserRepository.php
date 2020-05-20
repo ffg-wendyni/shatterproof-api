@@ -87,7 +87,6 @@ class UserRepository extends ServiceEntityRepository
         $zipcode = $data['zipcode'];
         $organization = $data['organization'];
         $newsletterSub = $data['newsletterSub'];
-        $shareOnMedia = $data['shareOnMedia'];
         $pledged = $data['pledged'];
 
         $user->setStringField('firstName', $firstName);
@@ -96,7 +95,6 @@ class UserRepository extends ServiceEntityRepository
         $user->setStringField('zipcode', $zipcode);
         $user->setStringField('organization', $organization);
         $user->setBooleanField('newsletterSub', $newsletterSub);
-        $user->setBooleanField('shareOnMedia', $shareOnMedia);
         $user->setBooleanField('pledged', $pledged);
         
         $this->manager->persist($user);

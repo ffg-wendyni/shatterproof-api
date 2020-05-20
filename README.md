@@ -38,7 +38,6 @@ This API server currently supports create, retrieve, update, and delete operatio
 >>   zipcode: string,
 >>   organization: string, // can be null
 >>   newsletterSub: boolean,
->>   shareOnMedia: boolean,
 >>   pledged: boolean,
 >>   customPledgeLink: string // provided by Drupal lifecycle management of Custom Pledge
 >>}
@@ -59,7 +58,6 @@ This API server currently supports create, retrieve, update, and delete operatio
 >>   zipcode: string,
 >>   organization: string, // can be null
 >>   newsletterSub: boolean,
->>   shareOnMedia: boolean,
 >>   pledged: boolean,
 >>   customPledge: string
 >>}
@@ -87,7 +85,6 @@ This API server currently supports create, retrieve, update, and delete operatio
 >>   zipcode: string,
 >>   organization: string, // can be empty string
 >>   newsletterSub: boolean,
->>   shareOnMedia: boolean,
 >>   pledged: boolean
 >>}
 >>```
@@ -136,6 +133,22 @@ This API server currently supports create, retrieve, update, and delete operatio
 >>]
 >>```
 
+* #### Retreive all pledges
+> `GET /pledges/all`
+>> Returns
+>>```javascript
+>>[
+>>  {
+>>     pledgeId: integer,
+>>     firstName: string,
+>>     lastName: string,
+>>     likeCount: integer,
+>>     pledgeBody: string
+>>  }
+>>  ...more {}
+>>]
+>>```
+
 * #### Retreive pledge information
 > `GET /pledges/<pledgeId>`
 >> Returns
@@ -146,8 +159,7 @@ This API server currently supports create, retrieve, update, and delete operatio
 >>   lastName: string,
 >>   likeCount: integer,
 >>   pledgeBody: string,
->>   approved: boolean,
->>   canShare: boolean
+>>   approved: boolean
 >>}
 >>```
 
@@ -161,8 +173,7 @@ This API server currently supports create, retrieve, update, and delete operatio
 >>   lastName: string,
 >>   likeCount: integer,
 >>   pledgeBody: string,
->>   approved: boolean,
->>   canShare: boolean
+>>   approved: boolean
 >>}
 >>```
 >> Returns

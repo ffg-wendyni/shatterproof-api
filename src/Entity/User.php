@@ -50,11 +50,6 @@ class User
     /**
      * @ORM\Column(type="boolean")
      */
-    private $shareOnMedia;
-
-    /**
-     * @ORM\Column(type="boolean")
-     */
     private $pledged;
 
     /**
@@ -106,7 +101,6 @@ class User
             'zipcode' => $this->getStringField('zipcode'),
             'organization' => $this->getStringField('organization'),
             'newsletterSub' => $this->getBooleanField('newsletterSub'),
-            'shareOnMedia' => $this->getBooleanField('shareOnMedia'),
             'pledged' => $this->getBooleanField('pledged'),
             'customPledgeId' => $this->getUserPledgeId()
         ];

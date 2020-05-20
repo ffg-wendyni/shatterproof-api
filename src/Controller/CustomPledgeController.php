@@ -19,21 +19,37 @@ class CustomPledgeController extends AbstractController
         }
 
     /**
-     * @Route("/pledges/{pledgeId}", name="get_one_pledge", methods={"GET"})
+     * @Route("/pledges/{pledgeId}", name="get_one_or_all_pledge", methods={"GET"})
      */
     public function get($pledgeId): JsonResponse
     {
-        $customPledge = $this->customPledgeRepository->findOneBy(['pledgeId' => $pledgeId]);
+        $customPledge = [];
+        $data = [];
 
-        $data = [
-            'pledgeId' => $customPledge->getPledgeId(),
-            'firstName' => $customPledge->getFirstName(),
-            'lastName' => $customPledge->getLastName(),
-            'likeCount' => $customPledge->getLikeCount(),
-            'pledgeBody' => $customPledge->getBody(),
-            'approved' => $customPledge->getApproved(),
-            'canShare' => $customPledge->getCanShare()
-        ];
+        if ($pledgeId == "all") {
+            $customPledges = $this->customPledgeRepository->findAll();
+    
+            foreach ($customPledges as $customPledge) {
+                $data[] = [
+                    'pledgeId' => $customPledge->getPledgeId(),
+                    'firstName' => $customPledge->getFirstName(),
+                    'lastName' => $customPledge->getLastName(),
+                    'likeCount' => $customPledge->getLikeCount(),
+                    'pledgeBody' => $customPledge->getBody()
+                ];
+            }
+        } else {
+            $customPledge = $this->customPledgeRepository->findOneBy(['pledgeId' => $pledgeId]);
+
+            $data = [
+                'pledgeId' => $customPledge->getPledgeId(),
+                'firstName' => $customPledge->getFirstName(),
+                'lastName' => $customPledge->getLastName(),
+                'likeCount' => $customPledge->getLikeCount(),
+                'pledgeBody' => $customPledge->getBody(),
+                'approved' => $customPledge->getApproved()
+            ];
+        }
 
         return new JsonResponse($data, Response::HTTP_OK);
     }
@@ -72,7 +88,6 @@ class CustomPledgeController extends AbstractController
         $customPledge->setLikeCount($data['likeCount']);
         $customPledge->setBody($data['pledgeBody']);
         $customPledge->setApproved($data['approved']);
-        $customPledge->setCanShare($data['canShare']);
 
         $updatedCustomPledge = $this->customPledgeRepository->updateCustomPledge($customPledge);
 

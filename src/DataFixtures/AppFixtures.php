@@ -25,7 +25,6 @@ class AppFixtures extends Fixture
             $userPledge->setBody("Sample custom pledge");
             $userPledge->setLikeCount(($i % 2) == 0 ? 10 : 0);
             $userPledge->setApproved(($i % 2) == 0);
-            $userPledge->setCanShare(($i % 2) == 0);
 
             $manager->persist($userPledge);
 
@@ -36,7 +35,6 @@ class AppFixtures extends Fixture
             $user->setStringField('zipcode', $faker->postcode);
             $user->setStringField('organization', $faker->company);
             $user->setBooleanField('newsletterSub', true);
-            $user->setBooleanField('shareOnMedia', true);
             $user->setBooleanField('pledged', true);
             $user->setUserPledge($userPledge);
 

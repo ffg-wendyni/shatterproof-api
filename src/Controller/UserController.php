@@ -35,12 +35,12 @@ class UserController extends AbstractController
 
 
         foreach ($data as $field => $value) {
-            if (empty($value) && $field != 'occupation' && $field != 'shareOnMedia' && $field != 'newsletterSub') {
+            if (empty($value) && $field != 'occupation' && $field != 'newsletterSub') {
                 throw new NotFoundHttpException('Expecting mandatory user parameter: '.$field);
             }
         }
 
-        $newCustomPledge = $this->customPledgeRepository->saveCustomPledge($data['firstName'], $data['lastName'], $data['customPledge'], $data['shareOnMedia']);
+        $newCustomPledge = $this->customPledgeRepository->saveCustomPledge($data['firstName'], $data['lastName'], $data['customPledge']);
 
         $data['userPledge'] = $newCustomPledge;
         $newUserId = $this->userRepository->saveUser($data);
